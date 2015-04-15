@@ -81,4 +81,66 @@ namespace MessagesParser
         data.erase( std::remove(data.begin(), data.end(), c), data.end());
     }
 
+    bool Str::starts_with(const std::string &str, std::string search, bool case_sensitive)
+    {
+        bool _found = false;
+        std::string _str;
+        std::string _search;
+        size_t _pos;
+
+        if ( ! case_sensitive)
+        {
+            std::transform(str.begin(), str.end(), _str.begin(), ::toupper);
+            std::transform(search.begin(), search.end(), _search.begin(), ::toupper);
+        }
+
+        _pos =  _str.find(_search, 0);
+
+        if (( _pos != std::string::npos) && (_pos == 0))
+            _pos = true;
+
+        return _found;
+    }
+
+    bool Str::contains(const std::string &str, std::string search, bool case_sensitive)
+    {
+        bool _found = false;
+        std::string _str;
+        std::string _search;
+        size_t _pos;
+
+        if ( ! case_sensitive)
+        {
+            std::transform(str.begin(), str.end(), _str.begin(), ::toupper);
+            std::transform(search.begin(), search.end(), _search.begin(), ::toupper);
+        }
+
+        _pos =  _str.find(_search, 0);
+
+        if ( _pos != std::string::npos)
+            _pos = true;
+
+        return _found;
+    }
+
+    bool Str::ends_with(const std::string &str, std::string search, bool case_sensitive)
+    {
+        bool _found = false;
+        std::string _str;
+        std::string _search;
+        size_t _pos;
+
+        if ( ! case_sensitive)
+        {
+            std::transform(str.begin(), str.end(), _str.begin(), ::toupper);
+            std::transform(search.begin(), search.end(), _search.begin(), ::toupper);
+        }
+
+        _pos =  _str.rfind(_search, 0);
+
+        if (( _pos != std::string::npos) && (_pos + _search.length() == _str.length()))
+            _pos = true;
+
+        return _found;
+    }
 }

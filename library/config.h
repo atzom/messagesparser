@@ -44,6 +44,11 @@
 
 #define _CFG_IDENTIFIER_STR     _STR_CONC(_CFG_BEGIN_STR,"IDENTIFIER")
 
+#define _CFG_STR_SIG            "[W]"
+#define _CFG_CHR_SIG            "[C]"
+#define _CFG_ASCII_SIG          "[A]"
+
+
 #define _CFG_STR_SPACE          "[:SPACE:]"
 #define _CFG_STR_TAB            "[:TAB:]"
 #define _CFG_STR_SLASH_R        "[:SLASH_R:]"

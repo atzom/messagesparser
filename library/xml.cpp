@@ -31,6 +31,7 @@
 #include <algorithm>
 #include <functional>
 #include <fstream>
+#include <ctype.h>
 #include <ctime>
 
 #include "xml.h"
@@ -182,6 +183,15 @@ namespace MessagesParser
         {
             std::string _key(key);
 
+            if (_key.length() == 0)
+                _key.assign("Empty");
+
+            if ( ( ! std::isalpha(_key.at(0))) && (! _key.at(0) != '_') )
+                _key = "_" + _key;
+    
+            if ( Str::starts_with(_key, "xml", false) )
+                _key = "_" + _key;
+
             _key.erase( std::remove(_key.begin(), _key.end(), ':'), _key.end());
             _key.erase( std::remove(_key.begin(), _key.end(), '<'), _key.end());
             _key.erase( std::remove(_key.begin(), _key.end(), '>'), _key.end());
@@ -198,6 +208,15 @@ namespace MessagesParser
         void Xml::EndBlock(std::string &key)
         {
             std::string _key(key);
+
+            if (_key.length() == 0)
+                _key.assign("Empty");
+
+            if ( ( ! std::isalpha(_key.at(0))) && (! _key.at(0) != '_') )
+                _key = "_" + _key;
+
+            if ( Str::starts_with(_key, "xml", false) )
+                _key = "_" + _key;
 
             _key.erase( std::remove(_key.begin(), _key.end(), ':'), _key.end());
             _key.erase( std::remove(_key.begin(), _key.end(), '<'), _key.end());

@@ -217,30 +217,58 @@ namespace MessagesParser
 			std::string _token = "";
 			unsigned short _part = 0;
 			LogFormat *_format = new LogFormat;
+            size_t _length = 0;
 			
 			while( (std::getline(ss, _token, ',')) && (_part < 3) )
 			{
 				if (_part == 0)
 				{
-					if (_token.length() == 1)
+                    _length = _token.length();
+					if (_length == 1)
 						_format->str_delimiter.assign( std::string(1, _token.at(0)) );
-					else
+					else if (_length >= 4)
 					{
-						if (_token.compare(_CFG_STR_SPACE) == 0)
-							_format->str_delimiter.assign( std::string(1, _CFG_CHR_SPACE) );
-						else if (_token.compare(_CFG_STR_TAB) == 0)
-							_format->str_delimiter.assign( std::string(1, _CFG_CHR_TAB) );
-						else if (_token.compare(_CFG_STR_SLASH_R) == 0)
-							_format->str_delimiter.assign( std::string(1, _CFG_CHR_SLASH_R) );
-						else if (_token.compare(_CFG_STR_SLASH_N) == 0)
-							_format->str_delimiter.assign( std::string(1, _CFG_CHR_SLASH_N) );
-						else if (_token.compare(_CFG_STR_CRLF) == 0)
-							_format->str_delimiter.assign( std::string(_CFG_CHR_CRLF) );
-						else if (_token.compare(_CFG_STR_COMMA) == 0)
-							_format->str_delimiter.assign( std::string(1, _CFG_CHR_COMMA) );
-						else
-							_format->str_delimiter.assign(_token);
+                        std::string _cfgType(_token.substr(0,3));
+
+                        _token.erase(0, 3);
+
+                        if (_cfgType == _CFG_STR_SIG)
+                        {
+                            _format->str_delimiter.assign(_token);
+                        }
+                        else if (_cfgType == _CFG_CHR_SIG)
+                        {
+                            if (_token.compare(_CFG_STR_SPACE) == 0)
+                                _format->str_delimiter.assign( std::string(1, _CFG_CHR_SPACE) );
+                            else if (_token.compare(_CFG_STR_TAB) == 0)
+                                _format->str_delimiter.assign( std::string(1, _CFG_CHR_TAB) );
+                            else if (_token.compare(_CFG_STR_SLASH_R) == 0)
+                                _format->str_delimiter.assign( std::string(1, _CFG_CHR_SLASH_R) );
+                            else if (_token.compare(_CFG_STR_SLASH_N) == 0)
+                                _format->str_delimiter.assign( std::string(1, _CFG_CHR_SLASH_N) );
+                            else if (_token.compare(_CFG_STR_CRLF) == 0)
+                                _format->str_delimiter.assign( std::string(_CFG_CHR_CRLF) );
+                            else if (_token.compare(_CFG_STR_COMMA) == 0)
+                                _format->str_delimiter.assign( std::string(1, _CFG_CHR_COMMA) );
+                        }
+                        else if (_cfgType == _CFG_ASCII_SIG)
+                        {
+                            unsigned int _ascii_code = 0;
+
+                            if (Str::str2number(_token, _ascii_code))
+                            {
+                                if ((_ascii_code > 0) && (_ascii_code < 255))
+                                {
+                                    unsigned char _c = _ascii_code;
+                                    _format->str_delimiter.assign( std::string(1, _c));
+                                }
+                            }
+                        }
 					}
+                    else
+                    {
+                        // Nothing for now
+                    }
 				}
 				else if (_part == 1)
 				{

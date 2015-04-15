@@ -49,6 +49,30 @@ namespace MessagesParser
         static const bool value = true;
     };
 
+    template<class T>
+    struct is_int
+    {
+        static const bool value = false;
+    };
+
+    template<>
+    struct is_int<int>
+    {
+        static const bool value = true;
+    };
+
+    template<class T>
+    struct is_uint
+    {
+        static const bool value = false;
+    };
+
+    template<>
+    struct is_uint<unsigned int>
+    {
+        static const bool value = true;
+    };
+
 
     class Str
     {
@@ -108,6 +132,10 @@ namespace MessagesParser
             static void trim_tabs(std::string &data);
             static void trim_spaces(std::string &data);
             static void trim_char(std::string &data, char c);
+
+            static bool starts_with(const std::string &str, std::string search, bool case_sensitive = false);
+            static bool contains(const std::string &str, std::string search, bool case_sensitive = false);
+            static bool ends_with(const std::string &str, std::string search, bool case_sensitive = false);
 
     };
 
