@@ -143,4 +143,26 @@ namespace MessagesParser
 
         return _found;
     }
+
+
+    void Str::replace(std::string &data, std::string src, std::string dst)
+    {
+        std::size_t _found = std::string::npos;
+
+        if ( (data.length() == 0) || (data.length() < src.length()) || (data.length() < dst.length()) )
+            return;
+
+        if (src.compare(dst) == 0)
+            return;
+
+        _found = data.find(src, 0);
+
+        while (_found != std::string::npos)
+        {
+            data = data.substr(0, _found) + dst + data.substr(_found+src.length(), data.length());
+
+            _found = data.find(src, _found + dst.length());
+        }
+
+    }
 }

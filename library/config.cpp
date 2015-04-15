@@ -74,9 +74,10 @@ namespace MessagesParser
 			{
 
 				// The following characters are ignored into the configuration file
-				_line.erase( std::remove(_line.begin(), _line.end(), ' '), _line.end() );
-				_line.erase( std::remove(_line.begin(), _line.end(), '\r'), _line.end() );
-				_line.erase( std::remove(_line.begin(), _line.end(), '\t'), _line.end() );
+                _line.erase( std::remove(_line.begin(), _line.end(), _CFG_CHR_SPACE)   , _line.end() );
+                _line.erase( std::remove(_line.begin(), _line.end(), _CFG_CHR_TAB)     , _line.end() );
+                _line.erase( std::remove(_line.begin(), _line.end(), _CFG_CHR_SLASH_R) , _line.end() );
+                _line.erase( std::remove(_line.begin(), _line.end(), _CFG_CHR_SLASH_N) , _line.end() );
 				//////////////////////////////////////////////////////////////////////////
 
 				if (_line.length() == 0)
@@ -234,6 +235,12 @@ namespace MessagesParser
 
                         if (_cfgType == _CFG_STR_SIG)
                         {
+                            Str::replace(_token, std::string(_CFG_STR_SPACE)     , std::string(1, _CFG_CHR_SPACE) );
+                            Str::replace(_token, std::string(_CFG_STR_TAB)       , std::string(1, _CFG_CHR_TAB) );
+                            Str::replace(_token, std::string(_CFG_STR_SLASH_R)   , std::string(1, _CFG_CHR_SLASH_R) );
+                            Str::replace(_token, std::string(_CFG_STR_SLASH_N)   , std::string(1, _CFG_CHR_SLASH_N) );
+                            Str::replace(_token, std::string(_CFG_STR_COMMA)     , std::string(1, _CFG_CHR_COMMA) );
+
                             _format->str_delimiter.assign(_token);
                         }
                         else if (_cfgType == _CFG_CHR_SIG)

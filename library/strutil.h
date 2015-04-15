@@ -137,6 +137,8 @@ namespace MessagesParser
             static bool contains(const std::string &str, std::string search, bool case_sensitive = false);
             static bool ends_with(const std::string &str, std::string search, bool case_sensitive = false);
 
+            static void replace(std::string &data, std::string src, std::string dst);
+
     };
 
 }
