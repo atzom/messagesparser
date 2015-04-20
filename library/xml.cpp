@@ -192,12 +192,15 @@ namespace MessagesParser
             if ( Str::starts_with(_key, "xml", false) )
                 _key = "_" + _key;
 
-            _key.erase( std::remove(_key.begin(), _key.end(), ':'), _key.end());
             _key.erase( std::remove(_key.begin(), _key.end(), '<'), _key.end());
             _key.erase( std::remove(_key.begin(), _key.end(), '>'), _key.end());
             _key.erase( std::remove(_key.begin(), _key.end(), '&'), _key.end());
             _key.erase( std::remove(_key.begin(), _key.end(), '"'), _key.end());
             _key.erase( std::remove(_key.begin(), _key.end(), '\''), _key.end());
+            _key.erase( std::remove(_key.begin(), _key.end(), ']'), _key.end());
+            _key.erase( std::remove(_key.begin(), _key.end(), '['), _key.end());
+            _key.erase( std::remove(_key.begin(), _key.end(), ')'), _key.end());
+            _key.erase( std::remove(_key.begin(), _key.end(), '('), _key.end());
 
             MessagesParser::Str::trim_whitespaces(_key);
 
@@ -218,12 +221,15 @@ namespace MessagesParser
             if ( Str::starts_with(_key, "xml", false) )
                 _key = "_" + _key;
 
-            _key.erase( std::remove(_key.begin(), _key.end(), ':'), _key.end());
             _key.erase( std::remove(_key.begin(), _key.end(), '<'), _key.end());
             _key.erase( std::remove(_key.begin(), _key.end(), '>'), _key.end());
             _key.erase( std::remove(_key.begin(), _key.end(), '&'), _key.end());
             _key.erase( std::remove(_key.begin(), _key.end(), '"'), _key.end());
             _key.erase( std::remove(_key.begin(), _key.end(), '\''), _key.end());
+            _key.erase( std::remove(_key.begin(), _key.end(), ']'), _key.end());
+            _key.erase( std::remove(_key.begin(), _key.end(), '['), _key.end());
+            _key.erase( std::remove(_key.begin(), _key.end(), ')'), _key.end());
+            _key.erase( std::remove(_key.begin(), _key.end(), '('), _key.end());
 
 
             MessagesParser::Str::trim_whitespaces(_key);
