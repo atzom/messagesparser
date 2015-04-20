@@ -34,45 +34,10 @@
 #include <string>
 #include <sstream>
 
+#include "numerics.h"
+
 namespace MessagesParser
 {
-
-    template<class T>
-    struct is_pointer
-    {
-        static const bool value = false;
-    };
-
-    template<class T>
-    struct is_pointer<T *>
-    {
-        static const bool value = true;
-    };
-
-    template<class T>
-    struct is_int
-    {
-        static const bool value = false;
-    };
-
-    template<>
-    struct is_int<int>
-    {
-        static const bool value = true;
-    };
-
-    template<class T>
-    struct is_uint
-    {
-        static const bool value = false;
-    };
-
-    template<>
-    struct is_uint<unsigned int>
-    {
-        static const bool value = true;
-    };
-
 
     class Str
     {
@@ -123,6 +88,16 @@ namespace MessagesParser
 
                 if (is_pointer<T>::value)
                     return false;
+
+                if (
+                    (! is_int<T>::value) && 
+                    (! is_short<T>::value) && 
+                    (! is_long<T>::value) && 
+                    (! is_float<T>::value) && 
+                    (! is_double<T>::value)
+                   )
+                    return false;
+                    
 
                 return str2number(data, _var);
             }

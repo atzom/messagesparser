@@ -40,18 +40,6 @@
 namespace MessagesParser
 {
 
-    template<>
-    bool Str::isNumber<std::string>(std::string &data)
-    {
-        return false;
-    }
-
-    template<>
-    bool Str::isNumber<char>(std::string &data)
-    {
-        return false;
-    }
-
     void Str::trim_whitespaces(std::string &data)
     {
         data.erase( std::remove_if(data.begin(), data.end(), ::isspace), data.end());
