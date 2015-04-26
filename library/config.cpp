@@ -45,190 +45,190 @@ namespace MessagesParser
 
         Config::Config()
         {
-			m_identifier = 0;
-			m_strIdentifier.clear();
+            m_identifier = 0;
+            m_strIdentifier.clear();
         }
 
         Config::~Config()
-		{
-		}
+        {
+        }
 
-		bool Config::_Read_Block(std::string block, void (Config::*callback)(std::string str) )
-		{
-			std::ifstream _fin;
-			std::string _token = "";
-			std::string _line = "";
-			
-			bool _bBegin = false;
-			bool _bBlock = false;
+        bool Config::_Read_Block(std::string block, void (Config::*callback)(std::string str) )
+        {
+            std::ifstream _fin;
+            std::string _token = "";
+            std::string _line = "";
+            
+            bool _bBegin = false;
+            bool _bBlock = false;
 
-			_fin.open(m_cfg.c_str(), std::ifstream::in);
+            _fin.open(m_cfg.c_str(), std::ifstream::in);
 
-			if ( ! _fin.is_open())
-			{
-				std::cerr << "Couldn't open configuration file... weird" << std::endl;
-				return false;
-			}
+            if ( ! _fin.is_open())
+            {
+                std::cerr << "Couldn't open configuration file... weird" << std::endl;
+                return false;
+            }
 
-			while ( std::getline(_fin, _line, '\n') )
-			{
+            while ( std::getline(_fin, _line, '\n') )
+            {
 
-				// The following characters are ignored into the configuration file
+                // The following characters are ignored into the configuration file
                 _line.erase( std::remove(_line.begin(), _line.end(), _CFG_CHR_SPACE)   , _line.end() );
                 _line.erase( std::remove(_line.begin(), _line.end(), _CFG_CHR_TAB)     , _line.end() );
                 _line.erase( std::remove(_line.begin(), _line.end(), _CFG_CHR_SLASH_R) , _line.end() );
                 _line.erase( std::remove(_line.begin(), _line.end(), _CFG_CHR_SLASH_N) , _line.end() );
-				//////////////////////////////////////////////////////////////////////////
+                //////////////////////////////////////////////////////////////////////////
 
-				if (_line.length() == 0)
-					continue;
+                if (_line.length() == 0)
+                    continue;
 
-				// if a line is starting with '#' then we count it as a comment
-				if (_line.at(0) == '#')
-					continue;
+                // if a line is starting with '#' then we count it as a comment
+                if (_line.at(0) == '#')
+                    continue;
 
-				if (_line.find(_CFG_BEGIN_STR, 0) == 0)
-				{
-					// Check if already inited
-					if ( (_bBegin) || (_bBlock) )
-						continue;
+                if (_line.find(_CFG_BEGIN_STR, 0) == 0)
+                {
+                    // Check if already inited
+                    if ( (_bBegin) || (_bBlock) )
+                        continue;
 
-					_bBegin = true;
+                    _bBegin = true;
 
-					if (_line.find(block, 0) == 0)
-						_bBlock = true;
-					else
-						_bBegin = false;
+                    if (_line.find(block, 0) == 0)
+                        _bBlock = true;
+                    else
+                        _bBegin = false;
 
-					continue;
-				}
-				else if (_line.find(_CFG_END_STR,0) == 0)
-				{
-					if ( (_bBegin) && (_bBlock) )
-					{
-						_bBegin = false;
-						_bBlock = false;
-					}
+                    continue;
+                }
+                else if (_line.find(_CFG_END_STR,0) == 0)
+                {
+                    if ( (_bBegin) && (_bBlock) )
+                    {
+                        _bBegin = false;
+                        _bBlock = false;
+                    }
 
-					continue;
-				}
+                    continue;
+                }
 
-				if (_bBlock)
-				{
-					(this->*callback)(_line);
-				}
-					
-			}
+                if (_bBlock)
+                {
+                    (this->*callback)(_line);
+                }
+                    
+            }
 
-			_fin.close();
+            _fin.close();
 
-			return true;
-		}
-
-
-		bool Config::Read_Config(std::string filename)
-		{
-			m_cfg = filename;
-
-			if ( ! _Read_Block(_CFG_IDENTIFIER_STR, &Config::_Read_Identifier))
-			{
-				std::cerr << "Couldn't get identifier" << std::endl;
-				return false;
-			}
-
-			if ( ! _Read_Block(_CFG_FORMATS_STR, &Config::_Read_Formats))
-			{
-				std::cerr << "Couldn't get formats" << std::endl;
-				return false;
-			}
-
-			if ( ! _Read_Block(_CFG_PARTS_STR, &Config::_Read_Parts))
-			{
-				std::cerr << "Couldn't get parts" << std::endl;
-				return false;
-			}
+            return true;
+        }
 
 
-			if ( ! _Read_Block(_CFG_RULES_STR, &Config::_Read_Rules))
-				return false;
+        bool Config::Read_Config(std::string filename)
+        {
+            m_cfg = filename;
 
-			// Check the identifier
+            if ( ! _Read_Block(_CFG_IDENTIFIER_STR, &Config::_Read_Identifier))
+            {
+                std::cerr << "Couldn't get identifier" << std::endl;
+                return false;
+            }
 
-			if ( ! Str::str2number(m_strIdentifier, m_identifier))
-			{
-				m_identifier = 0;
+            if ( ! _Read_Block(_CFG_FORMATS_STR, &Config::_Read_Formats))
+            {
+                std::cerr << "Couldn't get formats" << std::endl;
+                return false;
+            }
 
-				// not a number thus try to get it via its name
-				for (Parts_t::iterator iter = m_parts_names.begin(); iter != m_parts_names.end(); iter++)
-				{
-					if ( m_strIdentifier.compare(*iter) == 0)
-					{
-						break;
-					} 
+            if ( ! _Read_Block(_CFG_PARTS_STR, &Config::_Read_Parts))
+            {
+                std::cerr << "Couldn't get parts" << std::endl;
+                return false;
+            }
 
-					m_identifier++;
-				}
-			}
 
-			if ( m_identifier >= m_parts_names.size() )
-				m_identifier = 0;
-			///////////////////////////////////////////////////////////////
+            if ( ! _Read_Block(_CFG_RULES_STR, &Config::_Read_Rules))
+                return false;
 
-			
-			// Check the configuration formats
-			for (Formats_t::iterator iter = m_formats.begin(); iter != m_formats.end(); iter++)
-			{
-				LogFormat *_format = *iter;
+            // Check the identifier
 
-				if (_format->expected_parts == 0)
-				{
+            if ( ! Str::str2number(m_strIdentifier, m_identifier))
+            {
+                m_identifier = 0;
+
+                // not a number thus try to get it via its name
+                for (Parts_t::iterator iter = m_parts_names.begin(); iter != m_parts_names.end(); iter++)
+                {
+                    if ( m_strIdentifier.compare(*iter) == 0)
+                    {
+                        break;
+                    } 
+
+                    m_identifier++;
+                }
+            }
+
+            if ( m_identifier >= m_parts_names.size() )
+                m_identifier = 0;
+            ///////////////////////////////////////////////////////////////
+
+            
+            // Check the configuration formats
+            for (Formats_t::iterator iter = m_formats.begin(); iter != m_formats.end(); iter++)
+            {
+                LogFormat *_format = *iter;
+
+                if (_format->expected_parts == 0)
+                {
                     LogFormat *_format = *iter;
 
                     delete _format;
 
-					iter = m_formats.erase(iter);
+                    iter = m_formats.erase(iter);
 
-					continue;
-				}
+                    continue;
+                }
 
-				if ( (_format->based_on_part >= 0) && (_format->based_on_part >= m_parts_names.size()) )
-				{
+                if ( (_format->based_on_part >= 0) && (_format->based_on_part >= m_parts_names.size()) )
+                {
                     LogFormat *_format = *iter;
 
                     delete _format;
 
-					iter = m_formats.erase(iter);
+                    iter = m_formats.erase(iter);
 
-					continue;
-				}
-			}
+                    continue;
+                }
+            }
 
-			return true;
+            return true;
 
-		}
+        }
 
-		void Config::_Read_Identifier(std::string str)
-		{
-			m_strIdentifier.assign(str);
-		}
+        void Config::_Read_Identifier(std::string str)
+        {
+            m_strIdentifier.assign(str);
+        }
 
-		void Config::_Read_Formats(std::string str)
-		{
-			std::stringstream ss(str);
-			std::string _token = "";
-			unsigned short _part = 0;
-			LogFormat *_format = new LogFormat;
+        void Config::_Read_Formats(std::string str)
+        {
+            std::stringstream ss(str);
+            std::string _token = "";
+            unsigned short _part = 0;
+            LogFormat *_format = new LogFormat;
             size_t _length = 0;
-			
-			while( (std::getline(ss, _token, ',')) && (_part < 3) )
-			{
-				if (_part == 0)
-				{
+            
+            while( (std::getline(ss, _token, ',')) && (_part < 3) )
+            {
+                if (_part == 0)
+                {
                     _length = _token.length();
-					if (_length == 1)
-						_format->str_delimiter.assign( std::string(1, _token.at(0)) );
-					else if (_length >= 4)
-					{
+                    if (_length == 1)
+                        _format->str_delimiter.assign( std::string(1, _token.at(0)) );
+                    else if (_length >= 4)
+                    {
                         std::string _cfgType(_token.substr(0,3));
 
                         _token.erase(0, 3);
@@ -271,41 +271,41 @@ namespace MessagesParser
                                 }
                             }
                         }
-					}
+                    }
                     else
                     {
                         // Nothing for now
                     }
-				}
-				else if (_part == 1)
-				{
-					if ( ! Str::str2number(_token, _format->expected_parts))
-						_format->expected_parts = 0;
-				}
-				else if (_part == 2)
-				{
-					if ((Str::isNumber<unsigned int>(_token)) && ( ! Str::str2number(_token, _format->based_on_part)))
-						_format->based_on_part = -1;
-				}
+                }
+                else if (_part == 1)
+                {
+                    if ( ! Str::str2number(_token, _format->expected_parts))
+                        _format->expected_parts = 0;
+                }
+                else if (_part == 2)
+                {
+                    if ((Str::isNumber<unsigned int>(_token)) && ( ! Str::str2number(_token, _format->based_on_part)))
+                        _format->based_on_part = -1;
+                }
 
-				_part++;
-			}
+                _part++;
+            }
 
-			if (_format->expected_parts > 0)
-				m_formats.push_back(_format);
+            if (_format->expected_parts > 0)
+                m_formats.push_back(_format);
             else
                 delete _format;
 
-		}
+        }
 
-		void Config::_Read_Parts(std::string str)
-		{
-			m_parts_names.push_back(str);
-		}
+        void Config::_Read_Parts(std::string str)
+        {
+            m_parts_names.push_back(str);
+        }
 
-		void Config::_Read_Rules(std::string str)
-		{
-		}
+        void Config::_Read_Rules(std::string str)
+        {
+        }
 
 
     }
