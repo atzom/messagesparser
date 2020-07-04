@@ -14,8 +14,7 @@ where they come from, such as log files from:
 - Unix Based Messages log files etc.
 
 
-The library being behind this tool is constantly being updated in order to support more
-features such as:
+The purpose of this library is to support (in the future) the following areas:
 
 - Statistical analysis (graphical representation of the information)
 - Monitoring capabilities
